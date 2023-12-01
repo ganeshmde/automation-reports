@@ -1,4 +1,4 @@
-﻿using System.Configuration;
+using System.Configuration;
 using System.Xml;
 using AventStack.ExtentReports;
 using AventStack.ExtentReports.Gherkin.Model;
@@ -80,10 +80,10 @@ namespace Reports.Old
                 long stopTime = long.Parse(tc.Attributes["stop"].InnerText);
                 string status = tc.Attributes["status"].InnerText;
                 string scenario = tc.FirstChild.InnerText;
+
                 if (status == "broken" || status == "failed")
                 {
-                    //string errorMsg = tc.SelectSingleNode("//failure//message").InnerText;
-                    string errorInfo = tc.SelectSingleNode("//failure//stack-trace").InnerText;
+                    string errorInfo = tc.LastChild.LastChild.FirstChild.InnerText;
                     test.Error = errorInfo;
                 }
 
