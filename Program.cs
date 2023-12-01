@@ -10,7 +10,4 @@ class Program
         ExtentReportsOld.GenerateReport();
         ExtentReportsOld.FlushReport();
     }
-
-
-   
 }
