@@ -25,10 +25,10 @@ namespace Reports.Old
 
         public ExtentReportsOld()
         {
-            Console.WriteLine("Generating extent reports");
+            Console.WriteLine("Generating extent reports\r\n");
             GenearateReports();
             ChangeReportName();
-            Console.WriteLine($"Reports generated in {reportsPath}");
+            Console.WriteLine($"Reports generated in '{reportsPath}'\r\n");
             if (openReport)
             {
                 OpenReport();
@@ -105,8 +105,15 @@ namespace Reports.Old
         /// </summary>
         void GetTestSuiteFiles()
         {
-            string[] files = Directory.GetFiles(allureResultsDir);
-            testSuiteFiles = files.Where(x => x.Contains("-testsuite.xml")).ToArray();
+            try
+            {
+                string[] files = Directory.GetFiles(allureResultsDir);
+                testSuiteFiles = files.Where(x => x.Contains("-testsuite.xml")).ToArray();
+            }
+            catch (Exception)
+            {
+                throw new Exception("set allure-results folder path in config file");
+            }
         }
 
         /// <summary>
@@ -310,13 +317,14 @@ namespace Reports.Old
         /// </summary>
         void OpenReport()
         {
-            Console.WriteLine("Opening report");
+            Console.WriteLine("Opening report\r\n");
             var proc = new Process();
             proc.StartInfo = new ProcessStartInfo(reportsPath)
             {
                 UseShellExecute = true
             };
             proc.Start();
+            Console.WriteLine("Report opened in the default browser\r\n");
         }
     }
 }
