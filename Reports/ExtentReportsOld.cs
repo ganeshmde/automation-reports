@@ -53,7 +53,7 @@ namespace Reports.Old
         void ImplementReports()
         {
             GetReportsPath();
-            htmlReporter = new ExtentHtmlReporter(reportsDir);
+            htmlReporter = new ExtentHtmlReporter(reportsDir + "index.html");
             extent = new ExtentReports();
             extent.AttachReporter(htmlReporter);
             //Reports Configuration
