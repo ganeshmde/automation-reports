@@ -12,70 +12,127 @@
 //using AventStack.ExtentReports.Model;
 //using Microsoft.VisualBasic;
 //using Reports.Models;
+//using System.Configuration;
+//using System.Diagnostics;
+//using System.Globalization;
 
-//namespace HTMLReports
+//namespace Reports.New
 //{
 //    /// <summary>
 //    /// Extent Reports Version - 5.0.1
 //    /// </summary>
 //    class ExtentReportsNew
 //    {
-//        public static ExtentReports extent;
-//        public static ExtentSparkReporter sparkReporter;
-//        //public static ExtentTest extentTest;
-//        public static List<TestFeature> features = new List<TestFeature>();
-//        public static string[] testSuiteFiles;
+//        ExtentReports extent;
+//        ExtentSparkReporter htmlReporter;
+//        List<TestFeature> features = new List<TestFeature>();
+//        string[] testSuiteFiles;
+//        string allureResultsDir = ConfigurationManager.AppSettings.Get("allure-results");
+//        Boolean openReport = bool.Parse(ConfigurationManager.AppSettings.Get("open-report"));
+//        string reportsDir, reportsPath;
 
-//        public static void ImplementReports()
+//        public ExtentReportsNew()
 //        {
-//            if (extent == null)
+//            Console.WriteLine("Generating extent reports\r\n");
+//            GenearateReports();
+//            ChangeReportName();
+//            Console.WriteLine($"Reports generated in '{reportsPath}'\r\n");
+//            if (openReport)
 //            {
-//                string reportsPath = GetReportsPath();
-//                sparkReporter = new ExtentSparkReporter(reportsPath);
-//                extent = new ExtentReports();
-//                extent.AttachReporter(sparkReporter);
-
-//                sparkReporter.Config.OfflineMode = true;
-//                sparkReporter.Config.DocumentTitle = "Strategic Space Automation Report";
-//                sparkReporter.Config.ReportName = "Automation Test Report";
-//                sparkReporter.Config.Theme = Theme.Standard;
-//                sparkReporter.Config.TimelineEnabled = true;
-//                sparkReporter.Config.Encoding = "UTF-8";
+//                OpenReport();
 //            }
-
-//            //return extent;
 //        }
-//        static string GetReportsPath()
+
+//        /// <summary>
+//        /// Generate reports
+//        /// </summary>
+//        void GenearateReports()
+//        {
+//            ImplementReports();
+//            GetTestSuiteFiles();
+//            GetXmlData();
+//            CreateTestNodes();
+//            extent.Flush();
+//        }
+
+//        /// <summary>
+//        /// Attach htmlreporter and set the configuration
+//        /// </summary>
+//        void ImplementReports()
+//        {
+//            GetReportsPath();
+//            htmlReporter = new ExtentSparkReporter(reportsDir + "index.html");
+//            extent = new ExtentReports();
+//            extent.AttachReporter(htmlReporter);
+//            //Reports Configuration
+//            htmlReporter.Config.DocumentTitle = "Strategic Space Automation Report";
+//            htmlReporter.Config.ReportName = "Automation Reports";
+//            htmlReporter.Config.Theme = Theme.Standard;
+//            htmlReporter.Config.Encoding = "UTF-8";
+//        }
+
+//        /// <summary>
+//        /// Creates an html report file with the current date name
+//        /// </summary>
+//        /// <returns></returns>
+//        void GetReportsPath()
 //        {
 //            string codeBasePath = System.Reflection.Assembly.GetCallingAssembly().CodeBase;
 //            string directory = Path.GetDirectoryName(codeBasePath);
 //            string projectPath = new Uri(directory).LocalPath;
-//            string reportsDir = projectPath + "\\reports";
+//            reportsDir = projectPath + "\\reports\\";
 
-//            if (Directory.Exists(reportsDir))
+//            if (!Directory.Exists(reportsDir))
 //            {
-//                Directory.Delete(reportsDir, true);
+//                Directory.CreateDirectory(reportsDir);
 //            }
-
-//            Directory.CreateDirectory(reportsDir);
-
-//            return reportsDir + "\\index.html";
 //        }
 
-//        public static void GetTestSuiteFiles()
+//        void ChangeReportName()
 //        {
-//            string directory = "C:\\Users\\1034557\\source\\sts\\retail-catman-test-automation\\STSWebAutomation\\allure-results";
-//            string[] files = Directory.GetFiles(directory);
-//            testSuiteFiles = files.Where(x => x.Contains("-testsuite.xml")).ToArray();
+//            DateTime dt = DateTime.Now;
+//            string time = $" ({dt.Hour}_{dt.Minute}_{dt.Second})";
+//            string date = $"{dt.Day}_{GetMonthName(dt)}_{dt.Year}";
+//            string reportName = $"index_{date + time}.html";
+//            reportsPath = reportsDir + reportName;
+//            File.Move($"{reportsDir + "index.html"}", reportsPath);
 //        }
 
-//        public static void GetXmlData()
+//        /// <summary>
+//        /// Returns the abbreviated month name for the given date
+//        /// </summary>
+//        /// <param name="dateTime"></param>
+//        /// <returns></returns>
+//        string GetMonthName(DateTime dateTime)
+//        {
+//            return CultureInfo.CurrentCulture.DateTimeFormat.GetAbbreviatedMonthName(dateTime.Month);
+//        }
+
+//        /// <summary>
+//        /// Gets the file path of xml files
+//        /// </summary>
+//        void GetTestSuiteFiles()
+//        {
+//            try
+//            {
+//                string[] files = Directory.GetFiles(allureResultsDir);
+//                testSuiteFiles = files.Where(x => x.Contains("-testsuite.xml")).ToArray();
+//            }
+//            catch (Exception)
+//            {
+//                throw new Exception("set allure-results folder path in config file");
+//            }
+//        }
+
+//        /// <summary>
+//        /// Reads the xml and gets information about features, scenarios and steps
+//        /// </summary>
+//        void GetXmlData()
 //        {
 //            foreach (string file in testSuiteFiles)
 //            {
 //                XmlDocument xmlDoc = new XmlDocument();
 //                xmlDoc.Load(file);
-
 //                TestFeature feature = new TestFeature();
 //                feature.name = xmlDoc.SelectSingleNode("//name").InnerText;
 //                feature.tests = GetTestCases(xmlDoc);
@@ -83,7 +140,12 @@
 //            }
 //        }
 
-//        static List<Testcase> GetTestCases(XmlNode node)
+//        /// <summary>
+//        /// Gets the Scenario/testcase info
+//        /// </summary>
+//        /// <param name="node"></param>
+//        /// <returns></returns>
+//        List<Testcase> GetTestCases(XmlNode node)
 //        {
 //            XmlNodeList testcaseNodes = node.SelectNodes("//test-case");
 //            List<Testcase> testcases = new List<Testcase>();
@@ -91,45 +153,52 @@
 //            foreach (XmlNode tc in testcaseNodes)
 //            {
 //                Testcase test = new Testcase();
-//                long startTime = Int64.Parse(tc.Attributes["start"].InnerText);
-//                long stopTime = Int64.Parse(tc.Attributes["stop"].InnerText);
+//                double startTime = double.Parse(tc.Attributes["start"].InnerText);
+//                double stopTime = double.Parse(tc.Attributes["stop"].InnerText);
 //                string status = tc.Attributes["status"].InnerText;
 //                string scenario = tc.FirstChild.InnerText;
-//                if (status == "passed" || status == "failed")
+//                string error = null;
+
+//                if (status == "broken" || status == "failed")
 //                {
-//                    string errorMsg = tc.SelectSingleNode("//failure//message").InnerText;
-//                    string errorInfo = tc.SelectSingleNode("//failure//stack-trace").InnerText;
-//                    test.error = errorMsg + "\r\n" + errorInfo;
+//                    error = tc.LastChild.LastChild.FirstChild.InnerText;
 //                }
-
-
-//                test.status = status;
-//                test.duration = stopTime - startTime;
-//                test.scenario = scenario;
-//                test.steps = GetSteps(tc);
-
+//                test.Status = status;
+//                test.StartTime = startTime;
+//                test.EndTime = stopTime;
+//                test.Scenario = scenario;
+//                test.Steps = GetSteps(tc);
+//                test.Error = error;
 //                testcases.Add(test);
 //            }
 
 //            return testcases;
 //        }
 
-//        static List<Step> GetSteps(XmlNode node)
+//        /// <summary>
+//        /// Gets the steps info corresponding to the scenario
+//        /// </summary>
+//        /// <param name="node"></param>
+//        /// <returns></returns>
+//        List<Step> GetSteps(XmlNode node)
 //        {
-//            XmlNodeList stepNodes = node.SelectNodes("//step");
+//            XmlNodeList stepNodes = node.Cast<XmlNode>()
+//                .Where(x => x.Name == "steps")
+//                .Select(x => x.ChildNodes)
+//                .FirstOrDefault();
 //            List<Step> steps = new List<Step>();
 
-//            foreach (XmlNode stepNode in stepNodes)
+//            foreach (XmlNode st in stepNodes)
 //            {
 //                Step step = new Step();
-//                long startTime = Int64.Parse(stepNode.Attributes["start"].InnerText);
-//                long stopTime = Int64.Parse(stepNode.Attributes["stop"].InnerText);
-//                string status = stepNode.Attributes["status"].InnerText;
-//                string stepInfo = stepNode.FirstChild.InnerText;
+//                long startTime = long.Parse(st.Attributes["start"].InnerText);
+//                long stopTime = long.Parse(st.Attributes["stop"].InnerText);
+//                string status = st.Attributes["status"].InnerText;
+//                string stepInfo = st.FirstChild.InnerText;
 //                string[] arr = stepInfo.Split(" ");
-//                string info = String.Join(" ", arr.Skip(1));
-//                XmlNode attatchments = stepNode.ChildNodes.Item(2);
-//                XmlNode attachment = attatchments.FirstChild;
+//                string info = string.Join(" ", arr.Skip(1));
+
+//                XmlNode attachment = st.ChildNodes.Cast<XmlNode>().Where(x => x.Name == "attachments").FirstOrDefault().FirstChild;
 //                string imageName = null;
 
 //                if (attachment != null)
@@ -137,19 +206,21 @@
 //                    imageName = attachment.Attributes["source"].InnerText;
 //                }
 
-
-//                step.duration = stopTime - startTime;
-//                step.type = arr[0];
-//                step.status = status;
-//                step.info = info;
-//                step.imageName = imageName;
-
+//                step.StartTime = startTime;
+//                step.EndTime = stopTime;
+//                step.Type = arr[0];
+//                step.Status = status;
+//                step.Info = info;
+//                step.ImageName = imageName;
 //                steps.Add(step);
 //            }
 //            return steps;
 //        }
 
-//        public static void GenerateReport()
+//        /// <summary>
+//        /// Creates test nodes using the tests info that read from xml files
+//        /// </summary>
+//        void CreateTestNodes()
 //        {
 //            foreach (TestFeature feature in features)
 //            {
@@ -158,96 +229,110 @@
 //            }
 //        }
 
-//        static void CreateScenario(ExtentTest extentTest, TestFeature feature)
+//        void CreateScenario(ExtentTest extentTest, TestFeature feature)
 //        {
 //            List<Testcase> testcases = feature.tests;
 //            foreach (var test in testcases)
 //            {
-//                ExtentTest scenario_extent = extentTest.CreateNode<Scenario>(test.scenario);
+//                ExtentTest scenario_extent = extentTest.CreateNode<Scenario>(test.Scenario);
 //                CreateStep(scenario_extent, test);
 //            }
 
 //        }
 
-//        static void CreateStep(ExtentTest extentTest, Testcase test)
+//        void CreateStep(ExtentTest extentTest, Testcase test)
 //        {
-//            List<Step> steps = test.steps;
+//            List<Step> steps = test.Steps;
 
 //            foreach (Step step in steps)
 //            {
-//                if (step.type == "Given")
+//                if (step.Type == "Given")
 //                {
-//                    if (step.status == "passed")
+//                    if (step.Status == "passed")
 //                    {
-//                        extentTest.CreateNode<Given>(step.info).Pass();
+//                        extentTest.CreateNode<Given>(step.Info);
 //                    }
-//                    else if (step.status == "failed" || step.status == "broken")
+//                    else if (step.Status == "failed" || step.Status == "broken")
 //                    {
-//                        extentTest.CreateNode<Given>(step.info).Fail(test.error, GetScreenshot(step.imageName));
+//                        extentTest.CreateNode<Given>(step.Info).Fail(test.Error, GetScreenshot(step.ImageName));
 //                    }
 //                    else
 //                    {
-//                        extentTest.CreateNode<Given>(step.info).Skip();
+//                        extentTest.CreateNode<Given>(step.Info).Skip("");
 //                    }
 //                }
-//                else if (step.type == "When")
+//                else if (step.Type == "When")
 //                {
-//                    if (step.status == "passed")
+//                    if (step.Status == "passed")
 //                    {
-//                        extentTest.CreateNode<When>(step.info).Pass();
+//                        extentTest.CreateNode<When>(step.Info);
 //                    }
-//                    else if (step.status == "failed" || step.status == "broken")
+//                    else if (step.Status == "failed" || step.Status == "broken")
 //                    {
-//                        extentTest.CreateNode<When>(step.info).Fail(test.error, GetScreenshot(step.imageName));
+//                        extentTest.CreateNode<When>(step.Info).Fail(test.Error, GetScreenshot(step.ImageName));
 //                    }
 //                    else
 //                    {
-//                        extentTest.CreateNode<When>(step.info).Skip();
+//                        extentTest.CreateNode<When>(step.Info).Skip("");
 //                    }
 //                }
-//                else if (step.type == "Then")
+//                else if (step.Type == "Then")
 //                {
-//                    if (step.status == "passed")
+//                    if (step.Status == "passed")
 //                    {
-//                        extentTest.CreateNode<Then>(step.info).Pass();
+//                        extentTest.CreateNode<Then>(step.Info);
 //                    }
-//                    else if (step.status == "failed" || step.status == "broken")
+//                    else if (step.Status == "failed" || step.Status == "broken")
 //                    {
-//                        extentTest.CreateNode<Then>(step.info).Fail(test.error, GetScreenshot(step.imageName));
+//                        extentTest.CreateNode<Then>(step.Info).Fail(test.Error, GetScreenshot(step.ImageName));
 //                    }
 //                    else
 //                    {
-//                        extentTest.CreateNode<Then>(step.info).Skip();
+//                        extentTest.CreateNode<Then>(step.Info).Skip("");
 //                    }
 //                }
 //                else
 //                {
-//                    if (step.status == "passed")
+//                    if (step.Status == "passed")
 //                    {
-//                        extentTest.CreateNode<And>(step.info).Pass();
+//                        extentTest.CreateNode<And>(step.Info);
 //                    }
-//                    else if (step.status == "failed" || step.status == "broken")
+//                    else if (step.Status == "failed" || step.Status == "broken")
 //                    {
-//                        extentTest.CreateNode<And>(step.info).Fail(test.error, GetScreenshot(step.imageName));
+//                        extentTest.CreateNode<And>(step.Info).Fail(test.Error, GetScreenshot(step.ImageName));
 //                    }
 //                    else
 //                    {
-//                        extentTest.CreateNode<And>(step.info).Skip();
+//                        extentTest.CreateNode<And>(step.Info).Skip("");
 //                    }
 //                }
 
 //            }
 //        }
 
-//        static Media GetScreenshot(string imageName)
+//        /// <summary>
+//        /// Returns failed scenario screenshot by its image name
+//        /// </summary>
+//        /// <param name="imageName"></param>
+//        /// <returns></returns>
+//        Media GetScreenshot(string imageName)
 //        {
-//            string directory = "C:\\Users\\1034557\\source\\sts\\retail-catman-test-automation\\STSWebAutomation\\allure-results";
-//            return MediaEntityBuilder.CreateScreenCaptureFromPath(directory + "\\" + imageName).Build();
+//            return MediaEntityBuilder.CreateScreenCaptureFromPath(allureResultsDir + "\\" + imageName).Build();
 //        }
 
-//        public static void FlushReport()
+//        /// <summary>
+//        /// Opens the report in browser
+//        /// </summary>
+//        void OpenReport()
 //        {
-//            extent.Flush();
+//            Console.WriteLine("Opening report\r\n");
+//            var proc = new Process();
+//            proc.StartInfo = new ProcessStartInfo(reportsPath)
+//            {
+//                UseShellExecute = true
+//            };
+//            proc.Start();
+//            Console.WriteLine("Report opened in the default browser\r\n");
 //        }
 //    }
 //}
