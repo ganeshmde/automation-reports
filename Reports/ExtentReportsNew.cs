@@ -1,4 +1,4 @@
-﻿//using System;
+//using System;
 //using System.Collections.Generic;
 //using System.IO;
 //using System.Linq;
@@ -15,6 +15,9 @@
 
 //namespace HTMLReports
 //{
+//    /// <summary>
+//    /// Extent Reports Version - 5.0.1
+//    /// </summary>
 //    class ExtentReportsNew
 //    {
 //        public static ExtentReports extent;
@@ -25,7 +28,7 @@
 
 //        public static void ImplementReports()
 //        {
-//            if(extent == null)
+//            if (extent == null)
 //            {
 //                string reportsPath = GetReportsPath();
 //                sparkReporter = new ExtentSparkReporter(reportsPath);
@@ -63,7 +66,7 @@
 //        {
 //            string directory = "C:\\Users\\1034557\\source\\sts\\retail-catman-test-automation\\STSWebAutomation\\allure-results";
 //            string[] files = Directory.GetFiles(directory);
-//            testSuiteFiles =files.Where(x => x.Contains("-testsuite.xml")).ToArray();
+//            testSuiteFiles = files.Where(x => x.Contains("-testsuite.xml")).ToArray();
 //        }
 
 //        public static void GetXmlData()
@@ -92,13 +95,13 @@
 //                long stopTime = Int64.Parse(tc.Attributes["stop"].InnerText);
 //                string status = tc.Attributes["status"].InnerText;
 //                string scenario = tc.FirstChild.InnerText;
-//                if(status == "passed" || status == "failed")
+//                if (status == "passed" || status == "failed")
 //                {
 //                    string errorMsg = tc.SelectSingleNode("//failure//message").InnerText;
 //                    string errorInfo = tc.SelectSingleNode("//failure//stack-trace").InnerText;
 //                    test.error = errorMsg + "\r\n" + errorInfo;
 //                }
-                
+
 
 //                test.status = status;
 //                test.duration = stopTime - startTime;
@@ -163,7 +166,7 @@
 //                ExtentTest scenario_extent = extentTest.CreateNode<Scenario>(test.scenario);
 //                CreateStep(scenario_extent, test);
 //            }
-            
+
 //        }
 
 //        static void CreateStep(ExtentTest extentTest, Testcase test)
@@ -172,13 +175,13 @@
 
 //            foreach (Step step in steps)
 //            {
-//                if(step.type == "Given")
+//                if (step.type == "Given")
 //                {
-//                    if(step.status == "passed")
+//                    if (step.status == "passed")
 //                    {
 //                        extentTest.CreateNode<Given>(step.info).Pass();
 //                    }
-//                    else if(step.status == "failed" || step.status == "broken")
+//                    else if (step.status == "failed" || step.status == "broken")
 //                    {
 //                        extentTest.CreateNode<Given>(step.info).Fail(test.error, GetScreenshot(step.imageName));
 //                    }
@@ -187,7 +190,7 @@
 //                        extentTest.CreateNode<Given>(step.info).Skip();
 //                    }
 //                }
-//                else if(step.type == "When")
+//                else if (step.type == "When")
 //                {
 //                    if (step.status == "passed")
 //                    {
