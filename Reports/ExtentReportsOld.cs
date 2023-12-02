@@ -1,4 +1,5 @@
 using System.Configuration;
+using System.Diagnostics;
 using System.Globalization;
 using System.Xml;
 using AventStack.ExtentReports;
@@ -9,6 +10,9 @@ using Reports.Models;
 
 namespace Reports.Old
 {
+    /// <summary>
+    /// Extent report version - 4.1.0
+    /// </summary>
     class ExtentReportsOld
     {
         ExtentReports extent;
@@ -16,12 +20,24 @@ namespace Reports.Old
         List<TestFeature> features = new List<TestFeature>();
         string[] testSuiteFiles;
         string allureResultsDir = ConfigurationManager.AppSettings.Get("allure-results");
+        Boolean openReport = bool.Parse(ConfigurationManager.AppSettings.Get("open-report"));
+        string reportsDir, reportsPath;
 
         public ExtentReportsOld()
         {
+            Console.WriteLine("Generating extent reports");
             GenearateReports();
+            ChangeReportName();
+            Console.WriteLine($"Reports generated in {reportsPath}");
+            if (openReport)
+            {
+                OpenReport();
+            }
         }
 
+        /// <summary>
+        /// Generate reports
+        /// </summary>
         void GenearateReports()
         {
             ImplementReports();
@@ -36,8 +52,8 @@ namespace Reports.Old
         /// </summary>
         void ImplementReports()
         {
-            string reportsPath = GetReportsPath();
-            htmlReporter = new ExtentHtmlReporter(reportsPath);
+            GetReportsPath();
+            htmlReporter = new ExtentHtmlReporter(reportsDir);
             extent = new ExtentReports();
             extent.AttachReporter(htmlReporter);
             //Reports Configuration
@@ -48,30 +64,34 @@ namespace Reports.Old
         }
 
         /// <summary>
-        /// Creates html report file with current date as name
+        /// Creates an html report file with the current date name
         /// </summary>
         /// <returns></returns>
-        string GetReportsPath()
+        void GetReportsPath()
         {
             string codeBasePath = System.Reflection.Assembly.GetCallingAssembly().CodeBase;
             string directory = Path.GetDirectoryName(codeBasePath);
             string projectPath = new Uri(directory).LocalPath;
-            string reportsDir = projectPath + "\\reports";
+            reportsDir = projectPath + "\\reports\\";
 
             if (!Directory.Exists(reportsDir))
             {
                 Directory.CreateDirectory(reportsDir);
             }
+        }
 
+        void ChangeReportName()
+        {
             DateTime dt = DateTime.Now;
-            string date = dt.Day.ToString() + "_" + GetMonthName(dt) + "_" + dt.Year.ToString();
-            string reportName = $"index_{date}.html";
-
-            return reportsDir + reportName;
+            string time = $" ({dt.Hour}_{dt.Minute}_{dt.Second})";
+            string date = $"{dt.Day}_{GetMonthName(dt)}_{dt.Year}";
+            string reportName = $"index_{date + time}.html";
+            reportsPath = reportsDir + reportName;
+            File.Move($"{reportsDir + "index.html"}", reportsPath);
         }
 
         /// <summary>
-        /// Returns Abbreviated Month name for the given date
+        /// Returns the abbreviated month name for the given date
         /// </summary>
         /// <param name="dateTime"></param>
         /// <returns></returns>
@@ -81,7 +101,7 @@ namespace Reports.Old
         }
 
         /// <summary>
-        /// Stores the paths of test suite xml files
+        /// Gets the file path of xml files
         /// </summary>
         void GetTestSuiteFiles()
         {
@@ -90,7 +110,7 @@ namespace Reports.Old
         }
 
         /// <summary>
-        /// Reads the xml and gets the features, scenarios and steps related info
+        /// Reads the xml and gets information about features, scenarios and steps
         /// </summary>
         void GetXmlData()
         {
@@ -162,8 +182,8 @@ namespace Reports.Old
                 string stepInfo = st.FirstChild.InnerText;
                 string[] arr = stepInfo.Split(" ");
                 string info = string.Join(" ", arr.Skip(1));
-                XmlNode attatchments = st.ChildNodes.Item(2);
-                XmlNode attachment = attatchments.FirstChild;
+
+                XmlNode attachment = st.ChildNodes.Cast<XmlNode>().Where(x => x.Name == "attachments").FirstOrDefault().FirstChild;
                 string imageName = null;
 
                 if (attachment != null)
@@ -177,7 +197,6 @@ namespace Reports.Old
                 step.Status = status;
                 step.Info = info;
                 step.ImageName = imageName;
-
                 steps.Add(step);
             }
             return steps;
@@ -284,6 +303,20 @@ namespace Reports.Old
         MediaEntityModelProvider GetScreenshot(string imageName)
         {
             return MediaEntityBuilder.CreateScreenCaptureFromPath(allureResultsDir + "\\" + imageName).Build();
+        }
+
+        /// <summary>
+        /// Opens the report in browser
+        /// </summary>
+        void OpenReport()
+        {
+            Console.WriteLine("Opening report");
+            var proc = new Process();
+            proc.StartInfo = new ProcessStartInfo(reportsPath)
+            {
+                UseShellExecute = true
+            };
+            proc.Start();
         }
     }
 }
