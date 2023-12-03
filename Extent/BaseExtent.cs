@@ -1,9 +1,8 @@
-﻿using AventStack.ExtentReports;
+using AventStack.ExtentReports;
 using Reports.Models;
 using System.Configuration;
 using System.Diagnostics;
 using System.Globalization;
-using System.IO;
 
 namespace Reports.Extent
 {
