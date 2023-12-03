@@ -35,7 +35,7 @@ namespace Reports.Extent
             CreateFeature();
             extent.Flush();
             ChangeReportName();
-            Console.WriteLine($"Reports generated in '{reportsPath}'\r\n");
+            Console.WriteLine($"Report generated in '{reportsPath}'\r\n");
             OpenReport();
         }
 
