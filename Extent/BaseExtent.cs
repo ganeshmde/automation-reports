@@ -57,7 +57,6 @@ namespace Reports.Extent
             {
                 Directory.CreateDirectory(reportsDir);
             }
-            //reportsDir = dir + "\\";
         }
 
         protected void ChangeReportName()
