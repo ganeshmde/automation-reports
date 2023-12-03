@@ -16,11 +16,15 @@
 //        {
 //            if (xmlFiles.Length > 0)
 //            {
-//                features = new GetXmlData(xmlFiles).GetTestsDataFromXml();
+//                new ExtractXmlTestData(xmlFiles, out features);
 //            }
 //            else if (jsonFiles.Length > 0)
 //            {
-//                features = new GetJsonData(jsonFiles, allureResultsDir).GetTestsDataFromJson();
+//                new ExtractJsonTestData(jsonFiles, allureResultsDir, out features);
+//            }
+//            else
+//            {
+//                throw new Exception("No data (*.xml | *.json) in the allure results directory");
 //            }
 //        }
 
