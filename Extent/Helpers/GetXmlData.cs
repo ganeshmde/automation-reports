@@ -1,4 +1,4 @@
-﻿using Reports.Models;
+using Reports.Models;
 using System.Xml;
 
 namespace Reports.Extent.Helpers
