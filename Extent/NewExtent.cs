@@ -1,8 +1,3 @@
-﻿//using System;
-//using System.Collections.Generic;
-//using System.Linq;
-//using System.Text;
-//using System.Threading.Tasks;
 //using AventStack.ExtentReports;
 //using AventStack.ExtentReports.Gherkin.Model;
 //using AventStack.ExtentReports.Model;
@@ -36,7 +31,7 @@
 //            CreateFeature();
 //            extent.Flush();
 //            ChangeReportName();
-//            Console.WriteLine($"Report generated in '{reportsPath}'\r\n");
+//            Console.WriteLine($"Reports generated in '{reportsPath}'\r\n");
 //            OpenReport();
 //        }
 
