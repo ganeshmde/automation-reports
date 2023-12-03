@@ -22,6 +22,10 @@ namespace Reports.Extent
             {
                 features = new GetJsonData(jsonFiles, allureResultsDir).GetTestsDataFromJson();
             }
+            else
+            {
+                throw new Exception("No data (*.xml | *.json) in the allure results directory");
+            }
         }
 
         public override void GenerateReport()
