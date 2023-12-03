@@ -79,7 +79,7 @@ namespace Reports.Extent.Helpers
                 var statusDetails = data["statusDetails"];
                 var statusDetailsJson = JsonConvert.SerializeObject(statusDetails);
                 var statusDetailsData = JsonConvert.DeserializeObject<Dictionary<string, dynamic>>(statusDetailsJson);
-                if (statusDetails.Count > 0)
+                if (statusDetailsData.Count > 0)
                 {
                     testError = statusDetailsData["trace"];
                 }
