@@ -16,8 +16,6 @@ namespace Reports.Extent
 
         protected readonly string allureResultsDir;
 
-        readonly Boolean openReport;
-
         protected string reportsDir, reportsPath;
 
         protected abstract void ImplementReports();
@@ -34,7 +32,6 @@ namespace Reports.Extent
         {
             extent = new ExtentReports();
             allureResultsDir = ConfigurationManager.AppSettings.Get("allure-results");
-            openReport = bool.Parse(ConfigurationManager.AppSettings.Get("open-report"));
             CreateReportsDirectory();
             string[] dirFiles = Directory.GetFiles(allureResultsDir);
             xmlFiles = dirFiles.Where(x => x.Contains("-testsuite.xml")).ToArray();
@@ -75,6 +72,13 @@ namespace Reports.Extent
 
         protected void OpenReport()
         {
+            Boolean openReport = false;
+            try
+            {
+                openReport = bool.Parse(ConfigurationManager.AppSettings.Get("open-report"));
+            }
+            catch (Exception) { }
+
             if (openReport)
             {
                 Console.WriteLine("Opening report\r\n");
