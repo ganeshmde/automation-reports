@@ -5,8 +5,8 @@ class Program
 {
     private static void Main(string[] args)
     {
-        //var extent = new NewExtent();
-        var extent = new OldExtent();
+        var extent = new NewExtent();
+        //var extent = new OldExtent();
         extent.GenerateReport();
     }
 }
