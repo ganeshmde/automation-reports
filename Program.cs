@@ -1,9 +1,12 @@
 // See https://aka.ms/new-console-template for more information
-using Reports.Old;
+using Reports.Extent;
+
 class Program
 {
     private static void Main(string[] args)
     {
-        new ExtentReportsOld();
+        //var extent = new NewExtent();
+        var extent = new OldExtent();
+        extent.GenerateReport();
     }
 }
