@@ -1,17 +1,18 @@
-﻿using Newtonsoft.Json;
+using Newtonsoft.Json;
 using Reports.Models;
 
 namespace Reports.Extent.Helpers
 {
-    public class GetJsonData
+    public class ExtractJsonTestData
     {
         readonly string[] jsonFiles;
         readonly string allureResultsDir;
 
-        public GetJsonData(string[] _jsonFiles, string _allureResultsDir)
+        public ExtractJsonTestData(string[] _jsonFiles, string _allureResultsDir, out List<TestFeature> features)
         {
             jsonFiles = _jsonFiles;
             allureResultsDir = _allureResultsDir;
+            features = GetTestsDataFromJson();
         }
 
         public List<TestFeature> GetTestsDataFromJson()
