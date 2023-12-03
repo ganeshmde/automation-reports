@@ -26,7 +26,7 @@ namespace Reports.Extent.Helpers
                 string featureName = data["name"];
                 if (features.Where(f => f.name == featureName).Count() > 0)
                 {
-                    featureName = "(Rerun Results: )" + featureName;
+                    featureName = "(Rerun) " + featureName;
                 }
                 feature.name = featureName;
                 feature.tests = GetScenariosData(scenarios);
