@@ -1,10 +1,10 @@
-﻿namespace Reports.Models
+namespace Reports.Models
 {
-    public class Testcase
+    public class TestScenario
     {
-        public string Scenario { get; set; }
+        public string Name { get; set; }
 
-        public List<Step> Steps { get; set; }
+        public List<TestStep> Steps { get; set; }
 
         public string Status { get; set; }
 
