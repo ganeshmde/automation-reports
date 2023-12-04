@@ -113,5 +113,27 @@ namespace Reports.Extent
                 Console.WriteLine("Report opened in the default browser\r\n");
             }
         }
+
+        protected void StartProgress()
+        {
+            Console.Write("Generating extent reports... ");
+            using (var progress = new ProgressBar())
+            {
+                try
+                {
+                    int sum = features.Sum(x => x.Scenarios.Count);
+                    for (int i = 0; i <= sum; i++)
+                    {
+                        progress.Report((double)i / sum);
+                        Thread.Sleep(30);
+                    }
+                }
+                catch (Exception)
+                {
+                    progress.Dispose();
+                }
+                Console.WriteLine("Done.");
+            }
+        }
     }
 }
