@@ -3,11 +3,11 @@ using System.Xml;
 
 namespace Reports.Extent.Helpers
 {
-    public class ExtractXmlTestData
+    public class ExtractTestDataFromXml
     {
         readonly string[] xmlFiles;
 
-        public ExtractXmlTestData(string[] _xmlFiles, out List<TestFeature> features)
+        public ExtractTestDataFromXml(string[] _xmlFiles, out List<TestFeature> features)
         {
             xmlFiles = _xmlFiles;
             features = GetTestsDataFromXml();
