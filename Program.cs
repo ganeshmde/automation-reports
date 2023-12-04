@@ -1,5 +1,6 @@
 // See https://aka.ms/new-console-template for more information
 using Reports.Extent;
+using Reports.Mail;
 
 class Program
 {
@@ -8,5 +9,7 @@ class Program
         //var extent = new OldExtent();
         var extent = new NewExtent();
         extent.GenerateReport();
+        var mail = new Mail(extent.reportsPath);
+        mail.SendMail();
     }
 }
