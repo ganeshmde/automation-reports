@@ -16,12 +16,20 @@
 
 //        public override void GenerateReport()
 //        {
-//            Console.WriteLine("Generating extent reports\r\n");
+//            //Display Progress bar
+//            Thread th = new Thread(new ThreadStart(StartProgress));
+//            th.Start();
+
+//            //Generate Report
 //            ImplementReports();
 //            CreateFeature();
 //            extent.Flush();
 //            ChangeReportName();
-//            Console.WriteLine($"Reports generated in '{reportsPath}'\r\n");
+//            th.Interrupt();
+//            th.Join();
+//            Console.WriteLine($"\r\n\r\nReport generated in '{reportsPath}'\r\n");
+
+//            //Opens reports
 //            OpenReport();
 //        }
 
@@ -36,7 +44,6 @@
 //            htmlReporter.Config.Theme = Theme.Standard;
 //            htmlReporter.Config.Encoding = "UTF-8";
 //        }
-
 
 //        protected override void CreateFeature()
 //        {
