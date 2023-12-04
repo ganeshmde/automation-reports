@@ -1,10 +1,10 @@
-﻿namespace Reports.Models
+namespace Reports.Models
 {
-    public class Step
+    public class TestStep
     {
         public string Type { get; set; }
 
-        public string Info { get; set; }
+        public string Name { get; set; }
 
         public double StartTime { get; set; }
 
