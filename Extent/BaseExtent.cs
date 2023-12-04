@@ -111,7 +111,6 @@ namespace Reports.Extent
 
             if (openReport)
             {
-                Console.WriteLine("Opening report\r\n");
                 var proc = new Process();
                 proc.StartInfo = new ProcessStartInfo(reportsPath)
                 {
