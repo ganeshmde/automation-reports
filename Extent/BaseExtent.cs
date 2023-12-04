@@ -17,7 +17,7 @@ namespace Reports.Extent
 
         protected readonly string allureResultsDir;
 
-        protected string reportsDir, reportsPath;
+        public string reportsDir, reportsPath;
 
         protected abstract void ImplementReports();
 
