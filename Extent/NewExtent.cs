@@ -13,10 +13,9 @@ namespace Reports.Extent
 
         public NewExtent()
         {
-            GenerateReport();
         }
 
-        protected override void GenerateReport()
+        public override void GenerateReport()
         {
             Console.WriteLine("Generating extent reports\r\n");
             ImplementReports();
