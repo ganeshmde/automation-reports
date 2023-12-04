@@ -27,7 +27,10 @@
 //            ChangeReportName();
 //            th.Interrupt();
 //            th.Join();
-//            Console.WriteLine($"\r\n\r\nReport generated in '{reportsPath}'\r\n");
+//            //Console.Clear();
+//            ClearLine();
+//            Console.WriteLine("Report generation completed.\r\n");
+//            Console.WriteLine($"Check report in: \"{reportsPath}\"\r\n");
 
 //            //Opens reports
 //            OpenReport();
