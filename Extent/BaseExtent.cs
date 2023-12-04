@@ -27,7 +27,7 @@ namespace Reports.Extent
 
         protected abstract void CreateStep(ExtentTest extentTest, TestScenario test);
 
-        protected abstract void GenerateReport();
+        public abstract void GenerateReport();
 
         public BaseExtent()
         {
