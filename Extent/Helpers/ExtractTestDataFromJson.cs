@@ -3,12 +3,12 @@ using Reports.Models;
 
 namespace Reports.Extent.Helpers
 {
-    public class ExtractJsonTestData
+    public class ExtractTestDataFromJson
     {
         readonly string[] jsonFiles;
         readonly string allureResultsDir;
 
-        public ExtractJsonTestData(string[] _jsonFiles, string _allureResultsDir, out List<TestFeature> features)
+        public ExtractTestDataFromJson(string[] _jsonFiles, string _allureResultsDir, out List<TestFeature> features)
         {
             jsonFiles = _jsonFiles;
             allureResultsDir = _allureResultsDir;
