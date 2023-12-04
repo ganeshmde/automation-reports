@@ -16,11 +16,11 @@
 //        {
 //            if (xmlFiles.Length > 0)
 //            {
-//                new ExtractXmlTestData(xmlFiles, out features);
+//                new ExtractTestDataFromXml(xmlFiles, out features);
 //            }
 //            else if (jsonFiles.Length > 0)
 //            {
-//                new ExtractJsonTestData(jsonFiles, allureResultsDir, out features);
+//                new ExtractTestDataFromJson(jsonFiles, allureResultsDir, out features);
 //            }
 //            else
 //            {
