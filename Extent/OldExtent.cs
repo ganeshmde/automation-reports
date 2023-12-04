@@ -54,88 +54,89 @@
 
 //        protected override void CreateFeature()
 //        {
+//            extent.Report.StartTime = new DateTime(1970, 1, 1).AddMilliseconds(features[0].Scenarios[0].StartTime + 19800000);
 //            foreach (TestFeature feature in features)
 //            {
-//                ExtentTest feature_extent = extent.CreateTest<Feature>("Feature: " + feature.name);
+//                ExtentTest feature_extent = extent.CreateTest<Feature>("Feature: " + feature.Name);
 //                CreateScenario(feature_extent, feature);
 //            }
 //        }
 
 //        protected override void CreateScenario(ExtentTest extentTest, TestFeature feature)
 //        {
-//            List<Testcase> testcases = feature.tests;
+//            List<TestScenario> testcases = feature.Scenarios;
 //            foreach (var test in testcases)
 //            {
-//                ExtentTest scenario_extent = extentTest.CreateNode<Scenario>(test.Scenario);
+//                ExtentTest scenario_extent = extentTest.CreateNode<Scenario>(test.Name);
 //                CreateStep(scenario_extent, test);
 //            }
 
 //        }
 
-//        protected override void CreateStep(ExtentTest extentTest, Testcase test)
+//        protected override void CreateStep(ExtentTest extentTest, TestScenario test)
 //        {
-//            List<Step> steps = test.Steps;
+//            List<TestStep> steps = test.Steps;
 
-//            foreach (Step step in steps)
+//            foreach (TestStep step in steps)
 //            {
 //                if (step.Type == "Given")
 //                {
 //                    if (step.Status == "passed")
 //                    {
-//                        extentTest.CreateNode<Given>(step.Info);
+//                        extentTest.CreateNode<Given>(step.Name);
 //                    }
 //                    else if (step.Status == "failed" || step.Status == "broken")
 //                    {
-//                        extentTest.CreateNode<Given>(step.Info).Fail(test.Error, GetScreenshot(step.ImageName));
+//                        extentTest.CreateNode<Given>(step.Name).Fail(test.Error, GetScreenshot(step.ImageName));
 //                    }
 //                    else
 //                    {
-//                        extentTest.CreateNode<Given>(step.Info).Skip("");
+//                        extentTest.CreateNode<Given>(step.Name).Skip("");
 //                    }
 //                }
 //                else if (step.Type == "When")
 //                {
 //                    if (step.Status == "passed")
 //                    {
-//                        extentTest.CreateNode<When>(step.Info);
+//                        extentTest.CreateNode<When>(step.Name);
 //                    }
 //                    else if (step.Status == "failed" || step.Status == "broken")
 //                    {
-//                        extentTest.CreateNode<When>(step.Info).Fail(test.Error, GetScreenshot(step.ImageName));
+//                        extentTest.CreateNode<When>(step.Name).Fail(test.Error, GetScreenshot(step.ImageName));
 //                    }
 //                    else
 //                    {
-//                        extentTest.CreateNode<When>(step.Info).Skip("");
+//                        extentTest.CreateNode<When>(step.Name).Skip("");
 //                    }
 //                }
 //                else if (step.Type == "Then")
 //                {
 //                    if (step.Status == "passed")
 //                    {
-//                        extentTest.CreateNode<Then>(step.Info);
+//                        extentTest.CreateNode<Then>(step.Name);
 //                    }
 //                    else if (step.Status == "failed" || step.Status == "broken")
 //                    {
-//                        extentTest.CreateNode<Then>(step.Info).Fail(test.Error, GetScreenshot(step.ImageName));
+//                        extentTest.CreateNode<Then>(step.Name).Fail(test.Error, GetScreenshot(step.ImageName));
 //                    }
 //                    else
 //                    {
-//                        extentTest.CreateNode<Then>(step.Info).Skip("");
+//                        extentTest.CreateNode<Then>(step.Name).Skip("");
 //                    }
 //                }
 //                else
 //                {
 //                    if (step.Status == "passed")
 //                    {
-//                        extentTest.CreateNode<And>(step.Info);
+//                        extentTest.CreateNode<And>(step.Name);
 //                    }
 //                    else if (step.Status == "failed" || step.Status == "broken")
 //                    {
-//                        extentTest.CreateNode<And>(step.Info).Fail(test.Error, GetScreenshot(step.ImageName));
+//                        extentTest.CreateNode<And>(step.Name).Fail(test.Error, GetScreenshot(step.ImageName));
 //                    }
 //                    else
 //                    {
-//                        extentTest.CreateNode<And>(step.Info).Skip("");
+//                        extentTest.CreateNode<And>(step.Name).Skip("");
 //                    }
 //                }
 
