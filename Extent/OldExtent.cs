@@ -1,9 +1,7 @@
-
 //using AventStack.ExtentReports;
 //using AventStack.ExtentReports.Gherkin.Model;
 //using AventStack.ExtentReports.Reporter;
 //using AventStack.ExtentReports.Reporter.Configuration;
-//using Reports.Extent.Helpers;
 //using Reports.Models;
 
 //namespace Reports.Extent
@@ -14,21 +12,10 @@
 
 //        public OldExtent()
 //        {
-//            if (xmlFiles.Length > 0)
-//            {
-//                new ExtractTestDataFromXml(xmlFiles, out features);
-//            }
-//            else if (jsonFiles.Length > 0)
-//            {
-//                new ExtractTestDataFromJson(jsonFiles, allureResultsDir, out features);
-//            }
-//            else
-//            {
-//                throw new Exception("No data (*.xml | *.json) in the allure results directory");
-//            }
+//            GenerateReport();
 //        }
 
-//        public override void GenerateReport()
+//        protected override void GenerateReport()
 //        {
 //            Console.WriteLine("Generating extent reports\r\n");
 //            ImplementReports();
