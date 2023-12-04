@@ -21,8 +21,8 @@ namespace Reports.Extent.Helpers
                 XmlDocument xmlDoc = new XmlDocument();
                 xmlDoc.Load(file);
                 TestFeature feature = new TestFeature();
-                feature.name = xmlDoc.SelectSingleNode("//name").InnerText;
-                feature.tests = GetTestCases(xmlDoc);
+                feature.Name = xmlDoc.SelectSingleNode("//name").InnerText;
+                feature.Scenarios = GetTestCases(xmlDoc);
                 features.Add(feature);
             }
             return features;
@@ -33,14 +33,14 @@ namespace Reports.Extent.Helpers
         /// </summary>
         /// <param name="node"></param>
         /// <returns></returns>
-        List<Testcase> GetTestCases(XmlNode node)
+        List<TestScenario> GetTestCases(XmlNode node)
         {
             XmlNodeList testcaseNodes = node.SelectNodes("//test-case");
-            List<Testcase> testcases = new List<Testcase>();
+            List<TestScenario> testcases = new List<TestScenario>();
 
             foreach (XmlNode tc in testcaseNodes)
             {
-                Testcase test = new Testcase();
+                TestScenario test = new TestScenario();
                 double startTime = double.Parse(tc.Attributes["start"].InnerText);
                 double stopTime = double.Parse(tc.Attributes["stop"].InnerText);
                 string status = tc.Attributes["status"].InnerText;
@@ -54,7 +54,7 @@ namespace Reports.Extent.Helpers
                 test.Status = status;
                 test.StartTime = startTime;
                 test.EndTime = stopTime;
-                test.Scenario = scenario;
+                test.Name = scenario;
                 test.Steps = GetSteps(tc);
                 test.Error = error;
                 testcases.Add(test);
@@ -68,17 +68,17 @@ namespace Reports.Extent.Helpers
         /// </summary>
         /// <param name="node"></param>
         /// <returns></returns>
-        List<Step> GetSteps(XmlNode node)
+        List<TestStep> GetSteps(XmlNode node)
         {
             XmlNodeList stepNodes = node.Cast<XmlNode>()
                 .Where(x => x.Name == "steps")
                 .Select(x => x.ChildNodes)
                 .FirstOrDefault();
-            List<Step> steps = new List<Step>();
+            List<TestStep> steps = new List<TestStep>();
 
             foreach (XmlNode st in stepNodes)
             {
-                Step step = new Step();
+                TestStep step = new TestStep();
                 long startTime = long.Parse(st.Attributes["start"].InnerText);
                 long stopTime = long.Parse(st.Attributes["stop"].InnerText);
                 string status = st.Attributes["status"].InnerText;
@@ -98,7 +98,7 @@ namespace Reports.Extent.Helpers
                 step.EndTime = stopTime;
                 step.Type = arr[0];
                 step.Status = status;
-                step.Info = info;
+                step.Name = info;
                 step.ImageName = imageName;
                 steps.Add(step);
             }
