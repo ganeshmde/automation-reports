@@ -3,7 +3,6 @@ using AventStack.ExtentReports.Gherkin.Model;
 using AventStack.ExtentReports.Model;
 using AventStack.ExtentReports.Reporter;
 using AventStack.ExtentReports.Reporter.Config;
-using Reports.Extent.Helpers;
 using Reports.Models;
 
 namespace Reports.Extent
@@ -18,39 +17,21 @@ namespace Reports.Extent
 
         public override void GenerateReport()
         {
+            //Display Progress bar
             Thread th = new Thread(new ThreadStart(StartProgress));
             th.Start();
+
+            //Generate Report
             ImplementReports();
             CreateFeature();
             extent.Flush();
             ChangeReportName();
             th.Interrupt();
             th.Join();
-            Console.WriteLine($"\r\nReports generated in '{reportsPath}'\r\n");
+            Console.WriteLine($"\r\n\r\nReport generated in '{reportsPath}'\r\n");
+
+            //Opens reports
             OpenReport();
-        }
-
-        void StartProgress()
-        {
-            Console.Write("Generating extent reports... ");
-            using (var progress = new ProgressBar())
-            {
-                try
-                {
-                    int sum = features.Sum(x => x.Scenarios.Count);
-                    for (int i = 0; i <= sum; i++)
-                    {
-                        progress.Report((double)i / sum);
-                        Thread.Sleep(30);
-                    }
-                }
-                catch (Exception)
-                {
-                    progress.Dispose();
-                    Console.WriteLine("Done.");
-                }
-
-            }
         }
 
         protected override void ImplementReports()
@@ -64,7 +45,6 @@ namespace Reports.Extent
             sparkReporter.Config.Theme = Theme.Standard;
             sparkReporter.Config.Encoding = "UTF-8";
         }
-
 
         protected override void CreateFeature()
         {
