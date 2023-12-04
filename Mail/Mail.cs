@@ -58,7 +58,6 @@ namespace Reports.Mail
                 smtp.Send(msg);
                 smtp.Dispose();
             }
-
         }
     }
 }
