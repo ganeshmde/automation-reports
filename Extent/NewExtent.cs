@@ -3,6 +3,7 @@ using AventStack.ExtentReports.Gherkin.Model;
 using AventStack.ExtentReports.Model;
 using AventStack.ExtentReports.Reporter;
 using AventStack.ExtentReports.Reporter.Config;
+using Reports.Extent.Helpers;
 using Reports.Models;
 
 namespace Reports.Extent
