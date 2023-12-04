@@ -1,4 +1,5 @@
 using AventStack.ExtentReports;
+using Reports.Extent.Helpers;
 using Reports.Models;
 using System.Configuration;
 using System.Diagnostics;
@@ -10,9 +11,9 @@ namespace Reports.Extent
     {
         protected ExtentReports extent;
 
-        protected List<TestFeature> features = new List<TestFeature>();
+        protected readonly List<TestFeature> features = new List<TestFeature>();
 
-        public readonly string[] xmlFiles, jsonFiles;
+        string[] xmlFiles, jsonFiles;
 
         protected readonly string allureResultsDir;
 
@@ -26,20 +27,14 @@ namespace Reports.Extent
 
         protected abstract void CreateStep(ExtentTest extentTest, TestScenario test);
 
-        public abstract void GenerateReport();
+        protected abstract void GenerateReport();
 
         public BaseExtent()
         {
             extent = new ExtentReports();
             allureResultsDir = ConfigurationManager.AppSettings.Get("allure-results");
             CreateReportsDirectory();
-            string[] dirFiles = Directory.GetFiles(allureResultsDir);
-            xmlFiles = dirFiles.Where(x => x.Contains("-testsuite.xml")).ToArray();
-            jsonFiles = new DirectoryInfo(allureResultsDir).GetFiles()
-                        .OrderBy(f => f.LastWriteTime)
-                        .Where(f => f.Name.Contains("-container.json"))
-                        .Select(f => f.FullName)
-                        .ToArray();
+            features = GetTestData();
         }
 
         void CreateReportsDirectory()
@@ -53,6 +48,33 @@ namespace Reports.Extent
             {
                 Directory.CreateDirectory(reportsDir);
             }
+        }
+
+        List<TestFeature> GetTestData()
+        {
+            string[] dirFiles = Directory.GetFiles(allureResultsDir);
+            xmlFiles = dirFiles.Where(x => x.Contains("-testsuite.xml")).ToArray();
+            jsonFiles = new DirectoryInfo(allureResultsDir).GetFiles()
+                        .OrderBy(f => f.LastWriteTime)
+                        .Where(f => f.Name.Contains("-container.json"))
+                        .Select(f => f.FullName)
+                        .ToArray();
+
+            List<TestFeature> testData = new List<TestFeature>();
+            if (xmlFiles.Length > 0)
+            {
+                new ExtractTestDataFromXml(xmlFiles, out testData);
+            }
+            else if (jsonFiles.Length > 0)
+            {
+                new ExtractTestDataFromJson(jsonFiles, allureResultsDir, out testData);
+            }
+            else
+            {
+                throw new Exception("No data (*.xml | *.json) in the allure results directory");
+            }
+
+            return testData;
         }
 
         protected void ChangeReportName()
