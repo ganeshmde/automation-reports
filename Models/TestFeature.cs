@@ -1,9 +1,9 @@
-﻿namespace Reports.Models
+namespace Reports.Models
 {
     public class TestFeature
     {
-        public string name { get; set; }
+        public string Name { get; set; }
 
-        public List<Testcase> tests { get; set; }
+        public List<TestScenario> Scenarios { get; set; }
     }
 }
