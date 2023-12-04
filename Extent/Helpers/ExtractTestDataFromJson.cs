@@ -64,8 +64,10 @@ namespace Reports.Extent.Helpers
                 TestStep step = new TestStep();
                 var json = JsonConvert.SerializeObject(st);
                 var data = JsonConvert.DeserializeObject<Dictionary<string, dynamic>>(json);
+                string[] stepArr = data["name"].Split(' ');
                 step.Status = data["status"];
-                step.Name = data["name"];
+                step.Name = string.Join(" ", stepArr.Skip(1));
+                step.Type = stepArr[0];
                 step.StartTime = data["start"];
                 step.EndTime = data["stop"];
 
