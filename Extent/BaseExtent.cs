@@ -92,6 +92,14 @@ namespace Reports.Extent
             return CultureInfo.CurrentCulture.DateTimeFormat.GetAbbreviatedMonthName(dateTime.Month);
         }
 
+        protected void ClearLine()
+        {
+            int cursorTop = Console.CursorTop == 0 ? 0 : Console.CursorTop - 1;
+            Console.SetCursorPosition(0, cursorTop);
+            Console.Write(new string(' ', Console.WindowWidth));
+            Console.SetCursorPosition(0, cursorTop);
+        }
+
         protected void OpenReport()
         {
             Boolean openReport = false;
@@ -116,7 +124,7 @@ namespace Reports.Extent
 
         protected void StartProgress()
         {
-            Console.Write("Generating extent reports... ");
+            Console.Write("Generating extent report... ");
             using (var progress = new ProgressBar())
             {
                 try
@@ -132,7 +140,6 @@ namespace Reports.Extent
                 {
                     progress.Dispose();
                 }
-                Console.WriteLine("Done.");
             }
         }
     }
