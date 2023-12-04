@@ -24,48 +24,48 @@ namespace Reports.Extent.Helpers
                 var data = JsonConvert.DeserializeObject<Dictionary<string, dynamic>>(File.ReadAllText(file));
                 string[] scenarios = data["children"].ToObject<string[]>();
                 string featureName = data["name"];
-                if (features.Where(f => f.name == featureName).Count() > 0)
+                if (features.Where(f => f.Name == featureName).Count() > 0)
                 {
                     featureName = "(Rerun) " + featureName;
                 }
-                feature.name = featureName;
-                feature.tests = GetScenariosData(scenarios);
+                feature.Name = featureName;
+                feature.Scenarios = GetScenariosData(scenarios);
                 features.Add(feature);
             }
             return features;
         }
 
-        List<Testcase> GetScenariosData(string[] scenarios)
+        List<TestScenario> GetScenariosData(string[] scenarios)
         {
-            List<Testcase> tests = new List<Testcase>();
+            List<TestScenario> testScenarios = new List<TestScenario>();
             foreach (string scenario in scenarios)
             {
-                Testcase test = new Testcase();
+                TestScenario test = new TestScenario();
                 string resultsPath = allureResultsDir + "\\" + scenario + "-result.json";
                 var data = JsonConvert.DeserializeObject<Dictionary<string, dynamic>>(File.ReadAllText(resultsPath));
                 var stepsData = GetStepsData(data["steps"].ToObject<Object[]>());
                 test.Steps = stepsData.Item1;
                 test.Error = stepsData.Item2;
-                test.Scenario = data["name"];
+                test.Name = data["name"];
                 test.StartTime = data["start"];
                 test.EndTime = data["stop"];
                 test.Status = data["status"];
-                tests.Add(test);
+                testScenarios.Add(test);
             }
-            return tests;
+            return testScenarios;
         }
 
-        Tuple<List<Step>, string> GetStepsData(Object[] stepsData)
+        Tuple<List<TestStep>, string> GetStepsData(Object[] stepsData)
         {
-            List<Step> steps = new List<Step>();
+            List<TestStep> steps = new List<TestStep>();
             string testError = "";
             foreach (var st in stepsData)
             {
-                Step step = new Step();
+                TestStep step = new TestStep();
                 var json = JsonConvert.SerializeObject(st);
                 var data = JsonConvert.DeserializeObject<Dictionary<string, dynamic>>(json);
                 step.Status = data["status"];
-                step.Info = data["name"];
+                step.Name = data["name"];
                 step.StartTime = data["start"];
                 step.EndTime = data["stop"];
 
@@ -87,7 +87,7 @@ namespace Reports.Extent.Helpers
 
                 steps.Add(step);
             }
-            return new Tuple<List<Step>, string>(steps, testError);
+            return new Tuple<List<TestStep>, string>(steps, testError);
         }
 
     }
