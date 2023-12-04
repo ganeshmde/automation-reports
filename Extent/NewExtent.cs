@@ -17,13 +17,39 @@ namespace Reports.Extent
 
         public override void GenerateReport()
         {
-            Console.WriteLine("Generating extent reports\r\n");
+            Thread th = new Thread(new ThreadStart(StartProgress));
+            th.Start();
             ImplementReports();
             CreateFeature();
             extent.Flush();
             ChangeReportName();
-            Console.WriteLine($"Reports generated in '{reportsPath}'\r\n");
+            th.Interrupt();
+            th.Join();
+            Console.WriteLine($"\r\nReports generated in '{reportsPath}'\r\n");
             OpenReport();
+        }
+
+        void StartProgress()
+        {
+            Console.Write("Generating extent reports... ");
+            using (var progress = new ProgressBar())
+            {
+                try
+                {
+                    int sum = features.Sum(x => x.Scenarios.Count);
+                    for (int i = 0; i <= sum; i++)
+                    {
+                        progress.Report((double)i / sum);
+                        Thread.Sleep(30);
+                    }
+                }
+                catch (Exception)
+                {
+                    progress.Dispose();
+                    Console.WriteLine("Done.");
+                }
+
+            }
         }
 
         protected override void ImplementReports()
